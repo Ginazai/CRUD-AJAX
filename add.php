@@ -60,6 +60,45 @@ if (isset($_POST['add']) && isset($_SESSION['user_id']) && isset($_SESSION['name
 			return;
         }
     }
+
+       //Third-time data insertion
+    //School Selection
+    //
+    $rank_2 = 1;
+    for ($j = 0; $j <= 8; $j++) {
+    	if (! isset($_POST['edu_year'.$j])) continue;
+    	if (! isset($_POST['edu_school'.$j])) continue;
+    	$edu_year = $_POST['edu_year'.$j];
+    	$edu_school = $_POST['edu_school'.$j];
+    	//School Selection
+    	$var_stmt =$pdo->prepare("SELECT * FROM institution WHERE name = :name");
+   		$var_stmt->execute(array(
+    	':name' => $edu_school));
+    		while ($thisrow = $var_stmt->fetch(PDO::FETCH_ASSOC)) {
+    		$edu_id =  $thisrow['institution_id'];
+    	}  
+    	if (is_numeric($edu_school)) {
+    		$stmt = $pdo->prepare("INSERT INTO education (profile_id, institution_id, rank, year) VALUES (:pid, :inst, :rank, :year)");
+    		$stmt->execute(array(
+    			':pid' => $profile_id,
+    			':inst' => $edu_id,
+    			':rank' => $rank_2,
+    			':year' => $edu_year));
+    		$rank_2++;  
+    		$_SESSION['succes'] = "Record added";
+    		header("Location: index.php");
+    		return;
+    	}
+
+    	if (!is_numeric($edu_school)){
+    		$_SESSION['error'] = ":(";
+    		header("Location: index.php");
+    		return;
+    	}
+    	  
+    
+    	}
+    
 	//Data insertion
 	$sql = "INSERT INTO profile (user_id, first_name, last_name, email, headline, summary) VALUES (:uid, :fn, :ln, :em, :he, :su)";
 	$stmt = $pdo->prepare($sql);
@@ -88,36 +127,9 @@ if (isset($_POST['add']) && isset($_SESSION['user_id']) && isset($_SESSION['name
         );
         $rank++;
     }
-    //Third-time data insertion
-    //School Selection
-    //
-    $rank_2 = 1;
-    for ($j = 0; $j <= 8; $j++) {
-    	if (! isset($_POST['edu_year'.$j])) continue;
-    	if (! isset($_POST['edu_school'.$j])) continue;
-    	$edu_year = $_POST['edu_year'.$j];
-    	$edu_school = $_POST['edu_school'.$j];
-    	//School Selection
-    	$var_stmt =$pdo->prepare("SELECT * FROM institution WHERE name = :name");
-   		$var_stmt->execute(array(
-    	':name' => $edu_school));
-    	while ($thisrow = $var_stmt->fetch(PDO::FETCH_ASSOC)) {
-    		$edu_id =  $thisrow['institution_id'];
-    	}
-    	//
-    	$stmt = $pdo->prepare("INSERT INTO education (profile_id, institution_id, rank, year) VALUES (:pid, :inst, :rank, :year)");
-    	$stmt->execute(array(
-    		':pid' => $profile_id,
-    		':inst' => $edu_id,
-    		':rank' => $rank_2,
-    		':year' => $edu_year));
-    	$rank_2++;
 
-    }
-	$_SESSION['succes'] = "Record added";
-	header("Location: index.php");
-	return;
-}
+    	}
+
 ?>
 <!-- End of the model -->
 <!DOCTYPE html>

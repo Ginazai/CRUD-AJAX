@@ -66,7 +66,7 @@ if (! isset($_GET['profile_id'])) {
 			$edu_year = $row_3['year']; 
 		}
 		//Institution Relation
-		$stmt_4 = $pdo->prepare("SELECT name FROM institution WHERE institution_id = :inst");
+		$stmt_4 = $pdo->prepare("SELECT name FROM institution WHERE institution_id = :inst"); /*need to comtemplate possibility of no real institution (in add.php)*/
 		$stmt_4->execute(array(
 			':inst' => $inst_id));
 		while ($row_4 = $stmt_4->fetch(PDO::FETCH_ASSOC)) {
@@ -85,13 +85,13 @@ if (! isset($_GET['profile_id'])) {
 		}
 		echo("</ul>");
 		echo ("<a href='index.php'>Done</a>");
-		/*for ($i = 0; $i<=8; $i++) {
-			if (! $row_2['desc'.$i]) continue;
-			if (! $row_2['year'.$i]) continue;
+		for ($i = 0; $i<=8; $i++) {
+			if (! isset($row_2['desc'.$i])) continue;
+			if (! isset($row_2['year'.$i])) continue;
 			$year = $row_2['year'.$i];
 			$desc = $row_2['desc'.$i];
 			echo("<ul>Position: <li>".$year.":"." ".$desc."</li></ul>");
-		}*/
+		}
 
 		?>
 	</div>

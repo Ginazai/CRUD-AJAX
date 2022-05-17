@@ -165,6 +165,7 @@ $su = htmlentities($row['summary']);
 			<p>Email: <input type="text" name="email" value="<?= $em ?>"></p>
 			<p>Headline: <input type="text" name="headline" value="<?= $he ?>"></p>
 			<p>Summary:<br><textarea name="summary" rows="8" cols="80"><?= $su ?></textarea></p>
+			
 			<p>Position: <input id="addPost" type="submit" name="addPost" value="+"></p>
 			<div id="position_fields">
 				<script type="text/javascript">
