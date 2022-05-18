@@ -64,34 +64,52 @@ if (! isset($_GET['profile_id'])) {
 		while ($row_3 = $stmt_3->fetch(PDO::FETCH_ASSOC)) {
 			$inst_id = $row_3['institution_id'];
 			$edu_year = $row_3['year']; 
+			//Institution Relation
+			
 		}
-		//Institution Relation
-		$stmt_4 = $pdo->prepare("SELECT name FROM institution WHERE institution_id = :inst"); /*need to comtemplate possibility of no real institution (in add.php)*/
-		$stmt_4->execute(array(
-			':inst' => $inst_id));
-		while ($row_4 = $stmt_4->fetch(PDO::FETCH_ASSOC)) {
-			$inst_name = $row_4['name'];
-		}
-		echo("<p>Education</p><ul>");
-		echo("<li>".$edu_year.":"." ".$inst_name."</li></ul>");
+
+
+		if (isset($inst_id)) {
+			$stmt_4 = $pdo->prepare("SELECT name FROM institution WHERE institution_id = :inst");
+			$stmt_4->execute(array(
+					':inst' => $inst_id));
+				while ($row_4 = $stmt_4->fetch(PDO::FETCH_ASSOC)) {
+					$inst_name = $row_4['name'];
+				}	
+			echo("<p>Education</p><ul>");
+			echo("<li>".$edu_year.":"." ".$inst_name."</li></ul>");
+			}
+
+
+		
+		
+
 		//Second SQL
 		$sql_2 = "SELECT * FROM position WHERE profile_id = :pid_2";
 		$stmt_2 = $pdo->prepare($sql_2);
 		$stmt_2->execute(array(
 			':pid_2' => $_GET['profile_id']));
-		echo ("<p>Position</p><ul>");
 		while($row_2 = $stmt_2->fetch(PDO::FETCH_ASSOC)) {
-			echo ("<li>".$row_2['year'].":"." ".$row_2['description']."</li>");
+			$inst_year = $row_2['year'];
+			$inst_desc = $row_2['description'];
+			
 		}
-		echo("</ul>");
+
+		if (isset($inst_year) && isset($inst_year)) {
+				echo ("<p>Position</p><ul>");
+				echo ("<li>".$inst_year.":"." ".$inst_desc."</li>");
+				echo("</ul>");
+		}
+		
 		echo ("<a href='index.php'>Done</a>");
-		for ($i = 0; $i<=8; $i++) {
+
+	/*	for ($i = 0; $i<=8; $i++) {
 			if (! isset($row_2['desc'.$i])) continue;
 			if (! isset($row_2['year'.$i])) continue;
 			$year = $row_2['year'.$i];
 			$desc = $row_2['desc'.$i];
 			echo("<ul>Position: <li>".$year.":"." ".$desc."</li></ul>");
-		}
+		}*/
 
 		?>
 	</div>

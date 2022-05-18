@@ -61,7 +61,7 @@ if (isset($_POST['add']) && isset($_SESSION['user_id']) && isset($_SESSION['name
         }
     }
 
-       //Third-time data insertion
+       //data insertion
     //School Selection
     //
     $rank_2 = 1;
@@ -77,29 +77,17 @@ if (isset($_POST['add']) && isset($_SESSION['user_id']) && isset($_SESSION['name
     		while ($thisrow = $var_stmt->fetch(PDO::FETCH_ASSOC)) {
     		$edu_id =  $thisrow['institution_id'];
     	}  
-    	if (is_numeric($edu_school)) {
-    		$stmt = $pdo->prepare("INSERT INTO education (profile_id, institution_id, rank, year) VALUES (:pid, :inst, :rank, :year)");
-    		$stmt->execute(array(
-    			':pid' => $profile_id,
-    			':inst' => $edu_id,
-    			':rank' => $rank_2,
-    			':year' => $edu_year));
-    		$rank_2++;  
-    		$_SESSION['succes'] = "Record added";
-    		header("Location: index.php");
-    		return;
-    	}
 
-    	if (!is_numeric($edu_school)){
-    		$_SESSION['error'] = ":(";
-    		header("Location: index.php");
+    	if (!isset($edu_id)){
+    		$_SESSION['error'] = "Institution not recognized";
+    		header("Location: add.php");
     		return;
     	}
     	  
     
     	}
     
-	//Data insertion
+	//first insertion
 	$sql = "INSERT INTO profile (user_id, first_name, last_name, email, headline, summary) VALUES (:uid, :fn, :ln, :em, :he, :su)";
 	$stmt = $pdo->prepare($sql);
 	$stmt->execute(array(
@@ -110,6 +98,16 @@ if (isset($_POST['add']) && isset($_SESSION['user_id']) && isset($_SESSION['name
 		':he' => $_POST['headline'],
 		':su' => $_POST['summary']));
 	$profile_id = $pdo->lastInsertId();
+	//second insertion
+	if (isset($edu_id)) {
+    		$stmt = $pdo->prepare("INSERT INTO education (profile_id, institution_id, rank, year) VALUES (:pid, :inst, :rank, :year)");
+    		$stmt->execute(array(
+    			':pid' => $profile_id,
+    			':inst' => $edu_id,
+    			':rank' => $rank_2,
+    			':year' => $edu_year));
+    		$rank_2++;  
+    	}
 	//Second-time data
 	$rank = 1;
 	for($i=0; $i<=8; $i++) {
@@ -128,7 +126,11 @@ if (isset($_POST['add']) && isset($_SESSION['user_id']) && isset($_SESSION['name
         $rank++;
     }
 
-    	}
+    $_SESSION['success'] = "Record added";
+    header("Location: index.php");
+    return;
+
+   }
 
 ?>
 <!-- End of the model -->
@@ -200,7 +202,7 @@ if (isset($_POST['add']) && isset($_SESSION['user_id']) && isset($_SESSION['name
 							alert("Maximum of nine position entries exceeded");
 						} else {
 							if (i < 9) {
-								var inst = "$('#position" + i + "').remove(); return false;";
+								var inst = "$('#position" + i + "').remove(); i-= 1;";
 								$('#position_fields').append('<div id="position' + i + '"> \
 								<p>Year: <input  maxlength="4" type="text" name="year'+ i +'"><input type="button" value="-" onclick="' + inst + '"></p><br /> \
 								<textarea name="desc' + i + '" rows="8" cols="80"></textarea></div>'); 
