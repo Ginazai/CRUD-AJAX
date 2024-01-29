@@ -12,12 +12,11 @@ $(document).ready(function() {
 				<input class="school" type="text" name="edu_school' + j + '" rows="1" cols="60"></div>');
 			}
 
-			if (j > 0) {
-				$(".edu_rm").click(function() {
-					$(this).parent().parent().remove();
-				});
-			}
-
+			$('.edu_rm').click(function() {
+				console.log("removed clicked");
+				$(this).parent().parent().remove();
+			});
+			
 			$('.school').autocomplete({
 				source: "school.php" 
 			}); 

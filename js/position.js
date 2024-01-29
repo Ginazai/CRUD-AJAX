@@ -10,10 +10,11 @@ $(document).ready(function () {
 			<textarea name="desc' + i + '" rows="8" cols="80"></textarea></div>'); 
 			
 		}
-		if (i > 0) {
-			$(".position_remove").click(function() {
-				$(this).parent().parent().remove();
-			});
-		}
+
+		$(".position_remove").click(function() {
+			console.log("removed clicked");
+			$(this).parent().parent().remove();
+		});
+
 	});
-	});
+});
