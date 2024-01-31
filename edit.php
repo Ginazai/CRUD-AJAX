@@ -47,20 +47,14 @@ if (isset($_GET['profile_id']) && isset($_SESSION['user_id']) && isset($_SESSION
         }
    		}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/************************************************************************************************
+ ***********************************************************************************************
+ ***      ******* *****        ***** **********************************************************
+ *** ****** **** * *******  ******* * *******************************************************
+ *** ****** *** *** ******  ****** *** ****************************************************
+ *** ****** **       *****  *****       **************************************************
+ ***       ** ******* ****  **** ******* ***********************************************
+ **************************************************************************************/
 
 		//data modification
 		$sql = "UPDATE profile SET first_name = :fn, last_name = :ln, email = :em, headline = :he, summary = :su
@@ -75,8 +69,8 @@ if (isset($_GET['profile_id']) && isset($_SESSION['user_id']) && isset($_SESSION
 			':su' => $_POST['summary']));
 		//Second-time mod
 		// Clear out the old position entries
-		//$stmt = $pdo->prepare('DELETE FROM position WHERE profile_id=:pid');
-		//$stmt->execute(array( ':pid' => $_REQUEST['profile_id']));
+		$stmt = $pdo->prepare('DELETE FROM position WHERE profile_id=:pid');
+		$stmt->execute(array( ':pid' => $_REQUEST['profile_id']));
 		// Insert the position entries
 		$rank = 0;
 		for($i=0; $i<=8; $i++) {
@@ -134,12 +128,12 @@ $em = htmlentities($row['email']);
 $he = htmlentities($row['headline']);
 $su = htmlentities($row['summary']);
 ?>
-<!-- End of the model -->
+
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Rafael Caballero</title>
+	<title>Edit Registry</title>
 
 <script
   src="https://code.jquery.com/jquery-3.2.1.js"
@@ -218,25 +212,55 @@ href="https://code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css">
             <div class="col-sm-12" id="edu_fields">
 				<script type="text/javascript" src="js/edu.js"></script>
 				<script type="text/javascript" src="js/ajax.js"></script>
+
 				<?php
-				
+				$edu_query = "SELECT * FROM education WHERE profile_id = :pid";
+				$edu_stmt = $pdo->prepare($edu_query);
+				$edu_stmt->execute(array(
+				':pid' => $_GET['profile_id']));
+				$j = 0;
+				while ($edu_row = $edu_stmt->fetch(PDO::FETCH_ASSOC)) {
+					$inst = $edu_row['institution_id'];
+					$inst_year = $edu_row['year'];
+
+					$inst_query = "SELECT * FROM institution WHERE institution_id = :iid";
+					$inst_stmt = $pdo->prepare($inst_query);
+					$inst_stmt->execute(array(
+						':iid' => $inst
+					));
+					while ($inst_row = $inst_stmt->fetch(PDO::FETCH_ASSOC)) {
+						$inst_name = $inst_row['name'];
+						echo "<div class='edu_field row'><div class='col-6'><label for='edu_year{$j}' class='form-label'>Year:</label><input class='form-control' id='edu_year{$j}' maxlength='4' type='text' name='edu_year{$j}' value='{$inst_year}'></div><div class='col-6'><label for='edu_school{$j}' class='form-label'>Institution:</label><input class='school form-control' type='text' name='edu_school{$j}' rows='1' cols='60' value='{$inst_name}'></div><div class='col-12'><button class='edu_rm form-control btn btn-sm btn-danger mt-3' type='button'><span class='fas fa-trash'></span></button></div></div>";
+						$j++;
+					}
+				}
 				?>
+
 			</div>
 
-            <div class="col-sm-2">
-              <label for="addPost" class="form-label">Position:</label>
-              <input class="form-control btn btn-success btn-sm" id="addPost" type="submit" name="addPost" value="+">
-            </div>
+        <div class="col-sm-2">
+          <label for="addPost" class="form-label">Position:</label>
+          <input class="form-control btn btn-success btn-sm" id="addPost" type="submit" name="addPost" value="+">
+        </div>
 
-            <div class="col-sm-12" id="position_fields">
+      <div class="col-sm-12" id="position_fields">
 				<script type="text/javascript" src="js/position.js"></script>
 				<?php
-
+				$query = "SELECT * FROM position WHERE profile_id = :pid";
+				$stmt = $pdo->prepare($query);
+				$stmt->execute(array(
+				':pid' => $_GET['profile_id']));
+				$i = 0;
+				while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+					$year = $row['year'];
+					$desc = $row['description'];
+					echo "<div class='position_field'><label for='year{$i}' class='form-label'>Year:</label><input id='year{$i}' class='form-control col-6' maxlength='4' type='text' name='year{$i}' value='{$year}'><textarea class='form-control' name='desc{$i}' rows='8' cols='80'>{$desc}</textarea><button class='col-6 form-control position_remove btn btn-sm btn-danger mt-2' type='button'><span class='fas fa-trash'></span></button></div>";
+					$i++;
+				}
 				?>
 			</div>
-
 			<div class="row justify-content-around m-auto mt-5">
-				<input class="col-6 mb-3 btn btn-primary" type="submit" name="add" value="Add">
+				<input class="col-6 mb-3 btn btn-primary" type="submit" name="add" value="Update">
 				<input class="col-6 btn btn-danger" type="submit" name="cancel" value="Cancel">
 			</div>
 			<br>
