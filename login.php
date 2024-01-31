@@ -12,7 +12,7 @@ if (isset($_POST['log']) && isset($_POST['email']) && isset($_POST['password']))
 	$salt = 'XyZzy12*_';
 	$email_check = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
 	$check = $_POST['password'];
-	// $check = hash('md5', $salt.$_POST['password']);
+	$check = hash('sha256', $salt.$_POST['password']);
 	//Empty field check
 	if (strlen($_POST['email']) < 1 || strlen($_POST['password']) < 1) {
 		$_SESSION['error'] = "All fields are required";
@@ -51,20 +51,7 @@ if (isset($_POST['log']) && isset($_POST['email']) && isset($_POST['password']))
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Rafael Caballero</title>
-	<link rel="stylesheet" type="text/css" href="crud_stylesheet.css">
-<link rel="stylesheet" 
-    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" 
-    integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" 
-    crossorigin="anonymous">
-
-<link rel="stylesheet" 
-    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" 
-    integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" 
-    crossorigin="anonymous">
-
-<link rel="stylesheet" 
-    href="https://code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css">
+	<title>Login</title>
 
 <script
   src="https://code.jquery.com/jquery-3.2.1.js"
@@ -76,31 +63,77 @@ if (isset($_POST['log']) && isset($_POST['email']) && isset($_POST['password']))
   integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="
   crossorigin="anonymous"></script>
 	<link href="https://fonts.googleapis.com/css2?family=Rajdhani&display=swap" rel="stylesheet">
-	<script type="text/javascript" src="validate.js"></script>
-</head>
-<body>
-	<div class="container">
-		<h1 class="text-center">Please log in</h1>
-		<?php
-		if (isset($_SESSION['error'])) {
-			echo("<div style='color: red;' class='text-center'>".$_SESSION['error']."</div>");
-			unset($_SESSION['error']);
-		} elseif (isset($_SESSION['succes'])) {
-			echo("<div style='color: green;' class='text-center'>".$_SESSION['succes']."</div>");
-			unset($_SESSION['succes']);
-		}
-		?>
-		<!-- Log Check -->
-		<form method="post">
-			<p>E-mail <input id="e-mail" type="text" name="email"></p>
-			<p>Password <input type="password" name="password" id="id_1723"></p>
-			<input type="submit" onclick="return doValidate();" name="log" value="Log In">
-			<input type="submit" name="cancel" value="Cancel">
-		</form>
-		<?php 
 
-		?>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+
+<link 
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+	crossorigin="anonymous">
+
+<link rel="stylesheet" 
+href="https://code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css">
+
+<script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"
+	integrity="sha384-rOA1PnstxnOBLzCLMcre8ybwbTmemjzdNlILg8O7z1lUkLXozs4DHonlDtnE7fpc"
+	crossorigin="anonymous"></script>
+
+</head>
+<body class="d-flex align-items-center">
+<!-- alternative -->
+<main class="form-signin w-100 m-auto">
+	<?php
+	if (isset($_SESSION['error'])) {
+		echo("<div style='color: red;' class='text-center'>".$_SESSION['error']."</div>");
+		unset($_SESSION['error']);
+	} elseif (isset($_SESSION['succes'])) {
+		echo("<div style='color: green;' class='text-center'>".$_SESSION['succes']."</div>");
+		unset($_SESSION['succes']);
+	}
+	?>
+	<form class="shadow rounded-3 p-3" method="post">
+	<!-- <img class="mb-4" src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57"> -->
+	<h1 class="h3 fw-normal">Resume Registry</h1>
+	<p><strong>Please Login</strong></p>
+
+	<div class="form-floating mb-1">
+	  <input type="text" class="form-control" id="e-mail" name="email" placeholder="name@example.com">
+
+	  <label for="e-mail">Email address</label>
 	</div>
+
+	<div class="form-floating">
+	  <input type="password" class="form-control" id="id_1723" name="password" placeholder="Password">
+	  <label for="id_1723">Password</label>
+	</div>
+
+	<div class="form-check text-start my-3">
+	  <input class="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault" disabled>
+	  <label class="form-check-label" for="flexCheckDefault">
+	    Remember me
+	  </label>
+	</div>
+	<div class="row ms-1 mb-1">
+		<input class="btn btn-primary py-2 col-5 btn-sm" type="submit" onclick="return doValidate();" name="log" value="Log In">
+	</div>
+	<div class="row ms-1">
+	<input class="btn btn-danger py-2 col-5 btn-sm" type="submit" name="cancel" value="Cancel">
+</div>
+	</form>
+</main>
+<!-- alternative -->
+
 <!-- Resources -->
+<script
+	src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+	integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+	crossorigin="anonymous"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+	crossorigin="anonymous"></script>
+<link rel="stylesheet"
+	type="text/css"
+	href="css/stylesheet.css">
 </body>
 </html>

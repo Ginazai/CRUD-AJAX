@@ -46,10 +46,28 @@ if (isset($_GET['profile_id']) && isset($_SESSION['user_id']) && isset($_SESSION
 			return;
         }
    		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		//data modification
-		$sql = "UPDATE profile SET first_name = :fn, last_name = :ln, email = :em, headline = :he, summary = :su";
+		$sql = "UPDATE profile SET first_name = :fn, last_name = :ln, email = :em, headline = :he, summary = :su
+		WHERE profile_id = :pid";
 		$stmt = $pdo->prepare($sql);
 		$stmt->execute(array(
+			':pid' => $_REQUEST['profile_id'],
 			':fn' => $_POST['first_name'],
 			':ln' => $_POST['last_name'],
 			':em' => $_POST['email'],
@@ -122,18 +140,6 @@ $su = htmlentities($row['summary']);
 <head>
 	<meta charset="utf-8">
 	<title>Rafael Caballero</title>
-	<link rel="stylesheet" 
-    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" 
-    integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" 
-    crossorigin="anonymous">
-
-<link rel="stylesheet" 
-    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" 
-    integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" 
-    crossorigin="anonymous">
-
-<link rel="stylesheet" 
-    href="https://code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css">
 
 <script
   src="https://code.jquery.com/jquery-3.2.1.js"
@@ -145,6 +151,21 @@ $su = htmlentities($row['summary']);
   integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="
   crossorigin="anonymous"></script>
 	<link href="https://fonts.googleapis.com/css2?family=Rajdhani&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+
+<link 
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+	crossorigin="anonymous">
+
+<link rel="stylesheet" 
+href="https://code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css">
+
+<script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"
+	integrity="sha384-rOA1PnstxnOBLzCLMcre8ybwbTmemjzdNlILg8O7z1lUkLXozs4DHonlDtnE7fpc"
+	crossorigin="anonymous"></script>
+
 </head>
 <body>
 	<div class="container">
@@ -159,39 +180,80 @@ $su = htmlentities($row['summary']);
 			unset($_SESSION['succes']);
 		}
 		?>
-		<form method="post">
-			<p>First Name: <input type="text" name="first_name" value="<?= $fn ?>"></p>
-			<p>Last Name: <input type="text" name="last_name" value="<?= $ln ?>"></p>
-			<p>Email: <input type="text" name="email" value="<?= $em ?>"></p>
-			<p>Headline: <input type="text" name="headline" value="<?= $he ?>"></p>
-			<p>Summary:<br><textarea name="summary" rows="8" cols="80"><?= $su ?></textarea></p>
-			
-			<p>Position: <input id="addPost" type="submit" name="addPost" value="+"></p>
-			<div id="position_fields">
-				<script type="text/javascript">
-					var i = 0;
-				$(document).ready(function () {
-					$('#addPost').click( function (event) {
-						event.preventDefault();
-						if (i >= 9) {
-							alert("Maximum of nine position entries exceeded");
-						} else {
-							if (i < 9) {
-								var inst = "$('#position" + i + "').remove(); i -= 1;";
-								$('#position_fields').append('<div id="position' + i + '">\
-								<p>Year: <input type="text" name="year'+ i +'" value=""><input type="button" value="-" onclick="' + inst + '"></p><br /> \
-								<textarea name="desc' + i + '" rows="8" cols="80"></textarea></div>'); 
-								i++;
-							}
-						}
-						});
-					});
-				</script>
+		<form class="needs-validation add-form m-auto shadow rounded-3" method="post">
+		<form method="post" class="needs-validation add-form m-auto shadow rounded-3">
+          <div class="row">
+
+            <div class="col-6">
+              <label for="firstName" class="form-label">First name:</label>
+              <input id="firstName" type="text" class="form-control" name="first_name" placeholder="" value="<?= $fn ?>">
+            </div>
+
+            <div class="col-sm-6">
+              <label for="lastName" class="form-label">Last name:</label>
+              <input class="form-control" id="lastName" type="text" name="last_name" placeholder="" value="<?= $ln ?>">
+            </div>
+
+            <div class="col-sm-12">
+              <label for="email" class="form-label">Email:</label>
+              <input id="email" class="form-control" type="text" name="email" placeholder="" value="<?= $em ?>">
+            </div>
+
+            <div class="col-sm-12">
+              <label for="headline" class="form-label">Headline:</label>
+              <input class="form-control" id="headline" type="text" name="headline" placeholder="" value="<?= $he ?>">
+            </div>
+
+            <div class="col-sm-12">
+              <label for="summary" class="form-label">Summary:</label>
+              <textarea id="summary" class="form-control" name="summary" rows="8" cols="80"><?= $su ?></textarea>
+            </div>
+
+            <div class="col-sm-2">
+              <label for="addEdu" class="form-label">Education:</label>
+
+              <input class="form-control btn btn-success btn-sm" id="addEdu" type="submit" name="add_education" value="+">
+            </div>
+
+            <div class="col-sm-12" id="edu_fields">
+				<script type="text/javascript" src="js/edu.js"></script>
+				<script type="text/javascript" src="js/ajax.js"></script>
+				<?php
+				
+				?>
 			</div>
-			<input type="submit" name="add" value="Save">
-			<input type="submit" name="cancel" value="Cancel">
+
+            <div class="col-sm-2">
+              <label for="addPost" class="form-label">Position:</label>
+              <input class="form-control btn btn-success btn-sm" id="addPost" type="submit" name="addPost" value="+">
+            </div>
+
+            <div class="col-sm-12" id="position_fields">
+				<script type="text/javascript" src="js/position.js"></script>
+				<?php
+
+				?>
+			</div>
+
+			<div class="row justify-content-around m-auto mt-5">
+				<input class="col-6 mb-3 btn btn-primary" type="submit" name="add" value="Add">
+				<input class="col-6 btn btn-danger" type="submit" name="cancel" value="Cancel">
+			</div>
+			<br>
+        </form>
 		</form>
 	</div>
 <!-- Resources -->
+<script
+	src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+	integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+	crossorigin="anonymous"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+	crossorigin="anonymous"></script>
+<link rel="stylesheet"
+	type="text/css"
+	href="css/stylesheet.css">
 </body>
 </html>
