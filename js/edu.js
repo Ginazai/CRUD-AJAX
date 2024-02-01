@@ -12,15 +12,13 @@ $(document).ready(function() {
 				<div class="col-6"><label for="edu_school'+ j +'" class="form-label">Institution:</label><input class="school form-control" type="text" name="edu_school' + j + '" rows="1" cols="60"></div>\
 				<div class="col-12"><button class="edu_rm form-control btn btn-sm btn-danger mt-3" type="button"><span class="fas fa-trash"></span></button></div></div>');
 			}
-
-			$('.edu_rm').click(function() {
-				console.log("removed clicked");
-				$(this).parent().parent().remove();
-			});
-			
 			$('.school').autocomplete({
 				source: "school.php" 
 			}); 
 		}
+	});
+	$('.edu_rm').click(function() {
+		console.log("removed clicked");
+		$(this).parent().parent().remove();
 	});
 });
